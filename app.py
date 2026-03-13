@@ -9,31 +9,29 @@ arquivo_b = st.file_uploader("📎 Suba a Planilha B aqui", type=["csv"])
 
 if arquivo_a and arquivo_b:
     try:
-        # Tenta ler com separador vírgula
         df_a = pd.read_csv(arquivo_a, encoding="utf-8", sep=",")
     except:
-        try:
-            # Tenta com ponto e vírgula
-            df_a = pd.read_csv(arquivo_a, encoding="latin1", sep=";")
-        except:
-            st.error("❌ Erro ao ler Planilha A")
-            st.stop()
+        df_a = pd.read_csv(arquivo_a, encoding="latin1", sep=";")
 
     try:
         df_b = pd.read_csv(arquivo_b, encoding="utf-8", sep=",")
     except:
-        try:
-            df_b = pd.read_csv(arquivo_b, encoding="latin1", sep=";")
-        except:
-            st.error("❌ Erro ao ler Planilha B")
-            st.stop()
+        df_b = pd.read_csv(arquivo_b, encoding="latin1", sep=";")
 
-    # Mostra preview das planilhas
+    # Mostra preview
     st.write("👀 Preview Planilha A:")
     st.dataframe(df_a.head(3))
 
     st.write("👀 Preview Planilha B:")
     st.dataframe(df_b.head(3))
+
+    # Mostra quantas colunas cada uma tem
+    st.info(f"Planilha A tem {len(df_a.columns)} colunas")
+    st.info(f"Planilha B tem {len(df_b.columns)} colunas")
+
+    # Cria coluna D se não existir
+    while len(df_b.columns) < 4:
+        df_b[f"coluna_nova_{len(df_b.columns)}"] = None
 
     # Coluna A de A vai para coluna D de B
     df_b.iloc[:, 3] = df_a.iloc[:, 0].values
