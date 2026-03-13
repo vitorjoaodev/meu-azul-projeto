@@ -1,31 +1,33 @@
 import streamlit as st
-import openpyxl
+import pandas as pd
 import io
 
 st.title("Transferência de Planilhas")
-st.write("Suba o Excel A e baixe o Excel B já preenchido")
 
-arquivo = st.file_uploader("📎 Suba o Excel A aqui", type=["xlsx"])
+# Campo 1 - Planilha A
+arquivo_a = st.file_uploader("📎 Suba a Planilha A aqui", type=["csv"])
 
-if arquivo:
-    wb_origem = openpyxl.load_workbook(arquivo)
-    aba_origem = wb_origem.active
+# Campo 2 - Planilha B
+arquivo_b = st.file_uploader("📎 Suba a Planilha B aqui", type=["csv"])
 
-    wb_destino = openpyxl.Workbook()
-    aba_destino = wb_destino.active
+if arquivo_a and arquivo_b:
+    # Lê os dois CSVs
+    df_a = pd.read_csv(arquivo_a)
+    df_b = pd.read_csv(arquivo_b)
 
-    for linha in aba_origem.iter_rows(values_only=True):
-        aba_destino.append(linha)
+    # Pega coluna A da planilha A (primeira coluna)
+    # e joga na coluna D da planilha B (quarta coluna)
+    df_b.iloc[:, 3] = df_a.iloc[:, 0].values
 
-    output = io.BytesIO()
-    wb_destino.save(output)
-    output.seek(0)
+    # Gera o arquivo para baixar
+    output = io.StringIO()
+    df_b.to_csv(output, index=False)
 
     st.success("✅ Dados transferidos com sucesso!")
 
     st.download_button(
-        label="⬇️ Baixar Excel B preenchido",
-        data=output,
-        file_name="planilha_destino.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        label="⬇️ Baixar Planilha B preenchida",
+        data=output.getvalue(),
+        file_name="planilha_b_preenchida.csv",
+        mime="text/csv"
     )
