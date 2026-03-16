@@ -3,6 +3,14 @@ import pandas as pd
 import io
 
 st.title("Transferência de Planilhas -  Operações de Solo Safety")
+st.text("Siga as instruções abaixo, tripulante:
+
+1.Faça o upload da planilha “A” primeiro e, em seguida, da planilha “B”, ambas no formato CSV.
+2.Aguarde o carregamento completo dos arquivos.
+3.Quando aparecer a mensagem confirmando o carregamento das planilhas, clique no botão flutuante azul abaixo para baixar sua planilha.
+
+#oceuéazul ✈️💙")
+
 st.image("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG", width=200)
 
 arquivo_a = st.file_uploader("📎 Suba a Planilha A (Data SK.csv)", type=["csv", "xls", "xlsx"])
