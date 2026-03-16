@@ -4,19 +4,22 @@ import io
 
 st.title("Transferência de Planilhas")
 
-arquivo_a = st.file_uploader("📎 Suba a Planilha A aqui", type=["csv"])
-arquivo_b = st.file_uploader("📎 Suba a Planilha B aqui", type=["csv"])
+arquivo_a = st.file_uploader("📎 Suba a Planilha A aqui", type=["csv", "xls", "xlsx"])
+arquivo_b = st.file_uploader("📎 Suba a Planilha B aqui", type=["csv", "xls", "xlsx"])
+
+def ler_arquivo(arquivo):
+    nome = arquivo.name.lower()
+    if nome.endswith(".csv"):
+        try:
+            return pd.read_csv(arquivo, encoding="utf-8", sep=",")
+        except:
+            return pd.read_csv(arquivo, encoding="latin1", sep=";")
+    else:
+        return pd.read_excel(arquivo)
 
 if arquivo_a and arquivo_b:
-    try:
-        df_a = pd.read_csv(arquivo_a, encoding="utf-8", sep=",")
-    except:
-        df_a = pd.read_csv(arquivo_a, encoding="latin1", sep=";")
-
-    try:
-        df_b = pd.read_csv(arquivo_b, encoding="utf-8", sep=",")
-    except:
-        df_b = pd.read_csv(arquivo_b, encoding="latin1", sep=";")
+    df_a = ler_arquivo(arquivo_a)
+    df_b = ler_arquivo(arquivo_b)
 
     # Mostra preview
     st.write("👀 Preview Planilha A:")
