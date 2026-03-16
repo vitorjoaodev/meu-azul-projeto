@@ -69,7 +69,7 @@ if arquivo_a and arquivo_b:
             )
             
             if baixou:
-                st.success("Obrigado! Segurança é o nosso ✈️💙")
+                st.success("Obrigado!")
                 st.image("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG", width=200)
         
     except Exception as e:
