@@ -3,6 +3,7 @@ import pandas as pd
 import io
 
 st.title("Transferência de Planilhas")
+st.image("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG", width=200)
 
 arquivo_a = st.file_uploader("📎 Suba a Planilha A (Data SK.csv)", type=["csv", "xls", "xlsx"])
 arquivo_b = st.file_uploader("📎 Suba a Planilha B (emissoes.csv)", type=["csv", "xls", "xlsx"])
