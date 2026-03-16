@@ -2,6 +2,36 @@ import streamlit as st
 import pandas as pd
 import io
 
+st.markdown("""
+<style>
+div.stDownloadButton > button {
+    background-color: #0066CC !important;
+    color: white !important;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 999;
+    padding: 15px 30px;
+    font-size: 18px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 102, 204, 0.4);
+    animation: pulse 2s infinite;
+}
+
+div.stDownloadButton > button:hover {
+    background-color: #0052A3 !important;
+    transform: scale(1.05);
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(0, 102, 204, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 102, 204, 0); }
+}
+</style>
+""", unsafe_allow_html=True)
+
 st.title("Transferência de Planilhas - Operações de Solo Safety")
 st.markdown("""
 Siga as instruções abaixo, tripulante:
@@ -64,12 +94,11 @@ if arquivo_a and arquivo_b:
                 label="⬇️ Baixar Planilha Final",
                 data=csv,
                 file_name="planilha_final.csv",
-                mime="text/csv",
-                type="primary"
+                mime="text/csv"
             )
             
             if baixou:
-                st.success("Obrigado!")
+                st.success("Obrigado! Segurança é o nosso ✈️💙")
                 st.image("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG", width=200)
         
     except Exception as e:
