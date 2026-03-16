@@ -60,13 +60,17 @@ if arquivo_a and arquivo_b:
             
             csv = df_final.to_csv(index=False, encoding='latin-1')
             
-            st.download_button(
+            baixou = st.download_button(
                 label="⬇️ Baixar Planilha Final",
                 data=csv,
                 file_name="planilha_final.csv",
                 mime="text/csv",
                 type="primary"
             )
+            
+            if baixou:
+                st.success("Obrigado! Segurança é o nosso ✈️💙")
+                st.image("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG", width=200)
         
     except Exception as e:
         st.error(f"Erro ao ler arquivos: {e}")
