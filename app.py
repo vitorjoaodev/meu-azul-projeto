@@ -1,7 +1,3 @@
-
-#alteração: min_linhas = min(len(df_a), len(df_b))
-df_b.iloc[:min_linhas, 3] = df_a.iloc[:min_linhas, 0].values
-
 import streamlit as st
 import pandas as pd
 import io
@@ -37,8 +33,9 @@ if arquivo_a and arquivo_b:
     while len(df_b.columns) < 4:
         df_b[f"coluna_nova_{len(df_b.columns)}"] = None
 
-    # Coluna A de A vai para coluna D de B
-    df_b.iloc[:, 3] = df_a.iloc[:, 0].values
+    # Coluna A de A vai para coluna D de B (respeitando o menor tamanho)
+    min_linhas = min(len(df_a), len(df_b))
+    df_b.iloc[:min_linhas, 3] = df_a.iloc[:min_linhas, 0].values
 
     output = io.StringIO()
     df_b.to_csv(output, index=False)
