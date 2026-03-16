@@ -1,3 +1,7 @@
+
+#alteração: min_linhas = min(len(df_a), len(df_b))
+df_b.iloc[:min_linhas, 3] = df_a.iloc[:min_linhas, 0].values
+
 import streamlit as st
 import pandas as pd
 import io
