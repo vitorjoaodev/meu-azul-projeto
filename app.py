@@ -1,3 +1,32 @@
+#erro: ImportError: This app has encountered an error. The original error message is redacted to prevent data leaks. Full error details have been recorded in the logs (if you're on Streamlit Cloud, click on 'Manage app' in the lower right of your app).
+Traceback:
+File "/mount/src/meu-azul-projeto/app.py", line 21, in <module>
+    df_a = ler_arquivo(arquivo_a)
+File "/mount/src/meu-azul-projeto/app.py", line 18, in ler_arquivo
+    return pd.read_excel(arquivo)
+           ~~~~~~~~~~~~~^^^^^^^^^
+File "/home/adminuser/venv/lib/python3.14/site-packages/pandas/io/excel/_base.py", line 495, in read_excel
+    io = ExcelFile(
+        io,
+    ...<2 lines>...
+        engine_kwargs=engine_kwargs,
+    )
+File "/home/adminuser/venv/lib/python3.14/site-packages/pandas/io/excel/_base.py", line 1567, in __init__
+    self._reader = self._engines[engine](
+                   ~~~~~~~~~~~~~~~~~~~~~^
+        self._io,
+        ^^^^^^^^^
+        storage_options=storage_options,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        engine_kwargs=engine_kwargs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+File "/home/adminuser/venv/lib/python3.14/site-packages/pandas/io/excel/_xlrd.py", line 45, in __init__
+    import_optional_dependency("xlrd", extra=err_msg)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/adminuser/venv/lib/python3.14/site-pac 
+
 import streamlit as st
 import pandas as pd
 import io
