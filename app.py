@@ -21,7 +21,7 @@ arquivo_b = st.file_uploader("📎 Suba a Planilha B (emissoes.csv)", type=["csv
 def ler_arquivo(arquivo):
     nome = arquivo.name.lower()
     if nome.endswith(".csv"):
-        return pd.read_csv(arquivo, on_bad_lines='skip', encoding='latin-1')
+        return pd.read_csv(arquivo, on_bad_lines='skip', encoding='latin-1', sep=None, engine='python')
     elif nome.endswith(".xlsx"):
         return pd.read_excel(arquivo, engine='openpyxl')
     elif nome.endswith(".xls"):
@@ -40,26 +40,33 @@ if arquivo_a and arquivo_b:
         st.subheader("Planilha B - Emissoes")
         st.dataframe(df_b)
         
-        col_a = df_a.columns[0]
-        col_d = df_b.columns[3]
-        
-        st.info(f"Coluna A da Planilha A: **{col_a}** → Coluna D da Planilha B: **{col_d}**")
-        
-        df_final = df_b.copy()
-        df_final.iloc[:len(df_a), 3] = df_a.iloc[:, 0].values[:len(df_final)]
-        
-        st.subheader("Planilha Final (Resultado)")
-        st.dataframe(df_final)
-        
-        csv = df_final.to_csv(index=False, encoding='latin-1')
-        
-        st.download_button(
-            label="⬇️ Baixar Planilha Final",
-            data=csv,
-            file_name="planilha_final.csv",
-            mime="text/csv",
-            type="primary"
-        )
+        if len(df_a.columns) < 1:
+            st.error("Planilha A não tem colunas suficientes!")
+        elif len(df_b.columns) < 4:
+            st.error(f"Planilha B tem apenas {len(df_b.columns)} coluna(s). Precisa ter pelo menos 4 colunas (A, B, C, D).")
+            st.warning(f"Colunas disponíveis na Planilha B: {list(df_b.columns)}")
+        else:
+            col_a = df_a.columns[0]
+            col_d = df_b.columns[3]
+            
+            st.info(f"Coluna A da Planilha A: **{col_a}** → Coluna D da Planilha B: **{col_d}**")
+            
+            df_final = df_b.copy()
+            min_len = min(len(df_a), len(df_final))
+            df_final.iloc[:min_len, 3] = df_a.iloc[:min_len, 0].values
+            
+            st.subheader("Planilha Final (Resultado)")
+            st.dataframe(df_final)
+            
+            csv = df_final.to_csv(index=False, encoding='latin-1')
+            
+            st.download_button(
+                label="⬇️ Baixar Planilha Final",
+                data=csv,
+                file_name="planilha_final.csv",
+                mime="text/csv",
+                type="primary"
+            )
         
     except Exception as e:
         st.error(f"Erro ao ler arquivos: {e}")
