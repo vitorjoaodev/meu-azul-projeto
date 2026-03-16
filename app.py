@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import io
 
-st.title("Transferência de Planilhas")
+st.title("Transferência de Planilhas -  Operações de Solo Safety")
 st.image("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG", width=200)
 
 arquivo_a = st.file_uploader("📎 Suba a Planilha A (Data SK.csv)", type=["csv", "xls", "xlsx"])
