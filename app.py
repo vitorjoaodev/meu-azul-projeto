@@ -10,7 +10,7 @@ arquivo_b = st.file_uploader("📎 Suba a Planilha B aqui", type=["csv", "xls", 
 def ler_arquivo(arquivo):
     nome = arquivo.name.lower()
     if nome.endswith(".csv"):
-        return pd.read_csv(arquivo, on_bad_lines='skip')
+        return pd.read_csv(arquivo, on_bad_lines='skip', encoding='latin-1')
     elif nome.endswith(".xlsx"):
         return pd.read_excel(arquivo, engine='openpyxl')
     elif nome.endswith(".xls"):
