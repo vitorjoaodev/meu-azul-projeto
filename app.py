@@ -11,8 +11,10 @@ def ler_arquivo(arquivo):
     nome = arquivo.name.lower()
     if nome.endswith(".csv"):
         return pd.read_csv(arquivo)
-    elif nome.endswith(".xls") or nome.endswith(".xlsx"):
-        return pd.read_excel(arquivo)
+    elif nome.endswith(".xlsx"):
+        return pd.read_excel(arquivo, engine='openpyxl')
+    elif nome.endswith(".xls"):
+        return pd.read_excel(arquivo, engine='xlrd')
     else:
         raise ValueError("Formato não suportado")
 
