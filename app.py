@@ -59,6 +59,18 @@ def ler_arquivo(arquivo):
     else:
         raise ValueError("Formato não suportado")
 
+def extrair_timestamp(valor):
+    try:
+        texto = str(valor)
+        if "103 " in texto:
+            parte = texto.split("103 ")[1]
+            if parte.endswith("108"):
+                parte = parte[:-3]
+            return parte
+        return valor
+    except:
+        return valor
+
 if arquivo_a and arquivo_b:
     try:
         df_a = ler_arquivo(arquivo_a)
@@ -70,20 +82,21 @@ if arquivo_a and arquivo_b:
         st.subheader("Planilha B - Emissoes")
         st.dataframe(df_b)
         
-        if len(df_a.columns) < 1:
-            st.error("Planilha A não tem colunas suficientes!")
-        elif len(df_b.columns) < 4:
-            st.error(f"Planilha B tem apenas {len(df_b.columns)} coluna(s). Precisa ter pelo menos 4 colunas (A, B, C, D).")
-            st.warning(f"Colunas disponíveis na Planilha B: {list(df_b.columns)}")
+        if len(df_a.columns) < 6:
+            st.error(f"Planilha A precisa ter pelo menos 6 colunas (A-F). Tem apenas {len(df_a.columns)}.")
+        elif len(df_b.columns) < 23:
+            st.error(f"Planilha B precisa ter pelo menos 23 colunas (A-W). Tem apenas {len(df_b.columns)}.")
         else:
-            col_a = df_a.columns[0]
-            col_d = df_b.columns[3]
+            col_f = df_a.columns[5]
+            col_w = df_b.columns[22]
             
-            st.info(f"Coluna A da Planilha A: **{col_a}** → Coluna D da Planilha B: **{col_d}**")
+            st.info(f"Coluna F da Planilha A: **{col_f}** → Coluna W da Planilha B: **{col_w}**")
             
             df_final = df_b.copy()
             min_len = min(len(df_a), len(df_final))
-            df_final.iloc[:min_len, 3] = df_a.iloc[:min_len, 0].values
+            
+            valores_tratados = df_a.iloc[:min_len, 5].apply(extrair_timestamp).values
+            df_final.iloc[:min_len, 22] = valores_tratados
             
             st.subheader("Planilha Final (Resultado)")
             st.dataframe(df_final)
