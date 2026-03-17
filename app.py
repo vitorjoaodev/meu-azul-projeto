@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import io
 
 st.markdown("""
@@ -89,14 +90,19 @@ if arquivo_a and arquivo_b:
         else:
             col_f = df_a.columns[5]
             col_w = df_b.columns[22]
+            col_l = df_b.columns[11]
+            col_b = df_b.columns[1]
             
-            st.info(f"Coluna F da Planilha A: **{col_f}** → Coluna W da Planilha B: **{col_w}**")
+            st.info(f"**Etapa 1:** Coluna F ({col_f}) da Planilha A → Coluna W ({col_w}) da Planilha B")
+            st.info(f"**Etapa 2:** SE Coluna L ({col_l}) = 'General' → 'INTL', senão → 'DOM' na Coluna B ({col_b})")
             
             df_final = df_b.copy()
             min_len = min(len(df_a), len(df_final))
             
             valores_tratados = df_a.iloc[:min_len, 5].apply(extrair_timestamp).values
             df_final.iloc[:min_len, 22] = valores_tratados
+            
+            df_final.iloc[:, 1] = np.where(df_final.iloc[:, 11] == 'General', 'INTL', 'DOM')
             
             st.subheader("Planilha Final (Resultado)")
             st.dataframe(df_final)
