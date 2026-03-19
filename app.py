@@ -1,3 +1,19 @@
+#import pandas as pd
+
+# ler arquivos
+df1 = pd.read_csv("planilha1.csv")
+df2 = pd.read_excel("planilha2.xlsx")
+
+# transformar
+dados1 = df1.to_dict(orient="records")
+dados2 = df2.to_dict(orient="records")
+
+# usar na lógica (ou IA)
+for linha in dados1:
+    print(linha)
+
+
+
 import streamlit as st
 import pandas as pd
 import numpy as np
