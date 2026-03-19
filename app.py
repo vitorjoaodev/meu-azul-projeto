@@ -52,7 +52,7 @@ arquivo_b = st.file_uploader("📎 Suba a Planilha B (emissoes.csv)", type=["csv
 def ler_arquivo(arquivo):
     nome = arquivo.name.lower()
     if nome.endswith(".csv"):
-        return pd.read_csv(arquivo, on_bad_lines='skip', encoding='latin-1', sep=None, engine='python')
+        return pd.read_csv(arquivo, on_bad_lines='skip', encoding='latin-1', sep=';')
     elif nome.endswith(".xlsx"):
         return pd.read_excel(arquivo, engine='openpyxl')
     elif nome.endswith(".xls"):
@@ -92,9 +92,12 @@ if arquivo_a and arquivo_b:
             col_w = df_b.columns[22]
             col_l = df_b.columns[11]
             col_b = df_b.columns[1]
+            col_e = df_b.columns[4]
+            col_c = df_b.columns[2]
             
-            st.info(f"**Etapa 1:** Coluna F ({col_f}) da Planilha A → Coluna W ({col_w}) da Planilha B")
+            st.info(f"**Etapa 1:** Coluna F ({col_f}) → Coluna W ({col_w})")
             st.info(f"**Etapa 2:** SE Coluna L ({col_l}) = 'General' → 'INTL', senão → 'DOM' na Coluna B ({col_b})")
+            st.info(f"**Etapa 3:** NÚM.CARACT da Coluna E ({col_e}) → Coluna C ({col_c})")
             
             df_final = df_b.copy()
             min_len = min(len(df_a), len(df_final))
@@ -104,10 +107,12 @@ if arquivo_a and arquivo_b:
             
             df_final.iloc[:, 1] = np.where(df_final.iloc[:, 11] == 'General', 'INTL', 'DOM')
             
+            df_final.iloc[:, 2] = df_final.iloc[:, 4].astype(str).apply(len)
+            
             st.subheader("Planilha Final (Resultado)")
             st.dataframe(df_final)
             
-            csv = df_final.to_csv(index=False, encoding='latin-1')
+            csv = df_final.to_csv(index=False, encoding='latin-1', sep=';')
             
             baixou = st.download_button(
                 label="⬇️ Baixar Planilha Final",
