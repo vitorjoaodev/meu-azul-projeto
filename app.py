@@ -52,6 +52,8 @@ div.stDownloadButton > button:hover {
 </style>
 """, unsafe_allow_html=True)
 
+st.image("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG", width=200)
+
 st.title("Transferência de Planilhas - Operações de Solo Safety - BRIOU")
 
 components.html("""
@@ -104,25 +106,6 @@ components.html("""
         from, to { border-color: transparent; }
         50% { border-color: #0066CC; }
     }
-
-    .logo-reveal {
-        text-align: center;
-        margin-top: 20px;
-        opacity: 0;
-        transform: scale(0.5);
-        transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .logo-reveal.visible {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    .logo-reveal img {
-        width: 200px;
-        border-radius: 10px;
-        box-shadow: 0 4px 20px rgba(0, 102, 204, 0.4);
-    }
 </style>
 
 <div class="typing-container">
@@ -140,13 +123,8 @@ components.html("""
     </div>
 </div>
 
-<div class="logo-reveal" id="logoReveal">
-    <img src="https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG" alt="Logo Azul" />
-</div>
-
 <script>
     const lines = document.querySelectorAll('.typing-line');
-    const logo = document.getElementById('logoReveal');
     let currentLine = 0;
     const delayBetween = 1800;
 
@@ -159,16 +137,12 @@ components.html("""
             lines[currentLine].classList.add('active');
             currentLine++;
             setTimeout(typeLine, delayBetween);
-        } else {
-            setTimeout(function() {
-                logo.classList.add('visible');
-            }, 500);
         }
     }
 
     setTimeout(typeLine, 500);
 </script>
-""", height=350)
+""", height=250)
 
 arquivo_a: st.runtime.uploaded_file_manager.UploadedFile | None = st.file_uploader(
     "📎 Suba a Planilha A (Data SK)", type=["csv", "xls", "xlsx"]
