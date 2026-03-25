@@ -1,5 +1,8 @@
 streamlit
 pandas
 openpyxl
+javascript
+CSS
+HTML
 xlrd
 
