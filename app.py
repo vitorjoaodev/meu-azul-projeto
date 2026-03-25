@@ -6,6 +6,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import io
+import streamlit.components.v1 as components
 
 MIN_COLS_A: Final[int] = 6
 MIN_COLS_B: Final[int] = 23
@@ -52,17 +53,122 @@ div.stDownloadButton > button:hover {
 """, unsafe_allow_html=True)
 
 st.title("Transferência de Planilhas - Operações de Solo Safety - BRIOU")
-st.markdown("""
-Siga as instruções abaixo, tripulante:
 
-1. Faça o upload da planilha "A" primeiro e, em seguida, da planilha "B", ambas no formato CSV.
-2. Aguarde o carregamento completo dos arquivos.
-3. Quando aparecer a mensagem confirmando o carregamento das planilhas, clique no botão flutuante azul abaixo para baixar sua planilha.
+components.html("""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
 
-**#oceuéazul** ✈️💙
-""")
+    .typing-container {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 16px;
+        color: #FFFFFF;
+        background: linear-gradient(135deg, #001a33 0%, #003366 50%, #004080 100%);
+        padding: 25px;
+        border-radius: 12px;
+        margin: 10px 0;
+        border-left: 4px solid #0066CC;
+        box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+        min-height: 160px;
+    }
 
-st.image("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG", width=200)
+    .typing-line {
+        opacity: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        border-right: 2px solid #0066CC;
+        width: 0;
+        margin: 8px 0;
+        line-height: 1.6;
+    }
+
+    .typing-line.active {
+        opacity: 1;
+        animation: typing 1.5s steps(50, end) forwards, blink-caret 0.6s step-end infinite;
+    }
+
+    .typing-line.done {
+        opacity: 1;
+        width: 100%;
+        border-right: none;
+    }
+
+    .highlight { color: #66b3ff; font-weight: bold; }
+    .emoji { font-style: normal; }
+
+    @keyframes typing {
+        from { width: 0; }
+        to { width: 100%; }
+    }
+
+    @keyframes blink-caret {
+        from, to { border-color: transparent; }
+        50% { border-color: #0066CC; }
+    }
+
+    .logo-reveal {
+        text-align: center;
+        margin-top: 20px;
+        opacity: 0;
+        transform: scale(0.5);
+        transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .logo-reveal.visible {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .logo-reveal img {
+        width: 200px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 102, 204, 0.4);
+    }
+</style>
+
+<div class="typing-container">
+    <div class="typing-line" id="line1">
+        <span class="emoji">📋</span> 1. Faça o upload da planilha <span class="highlight">"A"</span> e depois da <span class="highlight">"B"</span>, ambas em CSV.
+    </div>
+    <div class="typing-line" id="line2">
+        <span class="emoji">⏳</span> 2. Aguarde o carregamento completo dos arquivos.
+    </div>
+    <div class="typing-line" id="line3">
+        <span class="emoji">⬇️</span> 3. Clique no <span class="highlight">botão azul flutuante</span> para baixar sua planilha.
+    </div>
+    <div class="typing-line" id="line4">
+        <span class="highlight">#oceuéazul</span> <span class="emoji">✈️💙</span>
+    </div>
+</div>
+
+<div class="logo-reveal" id="logoReveal">
+    <img src="https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG" alt="Logo Azul" />
+</div>
+
+<script>
+    const lines = document.querySelectorAll('.typing-line');
+    const logo = document.getElementById('logoReveal');
+    let currentLine = 0;
+    const delayBetween = 1800;
+
+    function typeLine() {
+        if (currentLine > 0) {
+            lines[currentLine - 1].classList.remove('active');
+            lines[currentLine - 1].classList.add('done');
+        }
+        if (currentLine < lines.length) {
+            lines[currentLine].classList.add('active');
+            currentLine++;
+            setTimeout(typeLine, delayBetween);
+        } else {
+            setTimeout(function() {
+                logo.classList.add('visible');
+            }, 500);
+        }
+    }
+
+    setTimeout(typeLine, 500);
+</script>
+""", height=350)
 
 arquivo_a: st.runtime.uploaded_file_manager.UploadedFile | None = st.file_uploader(
     "📎 Suba a Planilha A (Data SK)", type=["csv", "xls", "xlsx"]
