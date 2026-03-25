@@ -62,7 +62,7 @@ Siga as instruções abaixo, tripulante:
 **#oceuéazul** ✈️💙
 """)
 
-st.image("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG", width=200)
+st.video("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/download%20(1).mp4")
 
 arquivo_a: st.runtime.uploaded_file_manager.UploadedFile | None = st.file_uploader(
     "📎 Suba a Planilha A (Data SK)", type=["csv", "xls", "xlsx"]
@@ -152,7 +152,7 @@ def _processar(df_a: pd.DataFrame, df_b: pd.DataFrame) -> pd.DataFrame:
     df_final: pd.DataFrame = df_b.copy()
     min_len: int = min(len(df_a), len(df_final))
 
-    valores_tratados: np.ndarray = df_a.iloc[:min_len, IDX_COL_F].apply(extrair_timestamp).values  # type: ignore[assignment]
+    valores_tratados: np.ndarray = df_a.iloc[:min_len, IDX_COL_F].apply(extrair_timestamp).values
     df_final.iloc[:min_len, IDX_COL_W] = valores_tratados
 
     col_l_valores: pd.Series[str] = df_final.iloc[:, IDX_COL_L].astype(str).str.strip()
@@ -194,7 +194,7 @@ if arquivo_a is not None and arquivo_b is not None:
 
             if baixou:
                 st.success("Obrigado! Segurança é o nosso primeiro valor! ✈️💙")
-                st.image("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG", width=200)
+                st.video("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/download%20(1).mp4")
 
     except Exception as e:
         st.error(f"Erro ao ler arquivos: {e}")
