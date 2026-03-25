@@ -100,7 +100,7 @@ components.html("""
 
     .scan-line.active {
         opacity: 1;
-        animation: scanDown 2.5s ease-in-out forwards;
+        animation: scanDown 1.2s ease-in-out forwards;
     }
 
     @keyframes scanDown {
@@ -119,7 +119,7 @@ components.html("""
     }
 
     .logo-img.revealing {
-        animation: logoReveal 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        animation: logoReveal 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
 
     @keyframes logoReveal {
@@ -172,7 +172,7 @@ components.html("""
     }
 
     .glow-ring.active {
-        animation: glowPulse 3s ease-in-out forwards;
+        animation: glowPulse 2s ease-in-out forwards;
     }
 
     @keyframes glowPulse {
@@ -363,16 +363,16 @@ components.html("""
     setTimeout(function() {
         scanLine.classList.add('active');
         glowRing.classList.add('active');
-    }, 300);
+    }, 100);
 
     setTimeout(function() {
         logo.classList.add('revealing');
         burstParticles();
-    }, 800);
+    }, 200);
 
     setTimeout(function() {
         titleAnim.classList.add('visible');
-    }, 3200);
+    }, 1800);
 
     setTimeout(function() {
         typingBox.classList.add('visible');
@@ -393,7 +393,7 @@ components.html("""
             }
         }
         setTimeout(typeLine, 400);
-    }, 3800);
+    }, 2300);
 })();
 </script>
 """, height=480)
