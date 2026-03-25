@@ -62,7 +62,7 @@ Siga as instruções abaixo, tripulante:
 **#oceuéazul** ✈️💙
 """)
 
-st.video("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/download%20(1).mp4")
+st.image("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.gif")
 
 arquivo_a: st.runtime.uploaded_file_manager.UploadedFile | None = st.file_uploader(
     "📎 Suba a Planilha A (Data SK)", type=["csv", "xls", "xlsx"]
@@ -194,7 +194,7 @@ if arquivo_a is not None and arquivo_b is not None:
 
             if baixou:
                 st.success("Obrigado! Segurança é o nosso primeiro valor! ✈️💙")
-                st.video("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/download%20(1).mp4")
+                st.image("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.gif")
 
     except Exception as e:
         st.error(f"Erro ao ler arquivos: {e}")
