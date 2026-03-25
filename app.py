@@ -52,25 +52,199 @@ div.stDownloadButton > button:hover {
 </style>
 """, unsafe_allow_html=True)
 
-st.image("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG", width=200)
-
-st.title("Transferência de Planilhas - Operações de Solo Safety - BRIOU")
-
 components.html("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
 
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body { background: transparent; overflow-x: hidden; }
+
+    .hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 10px 10px;
+    }
+
+    .logo-wrapper {
+        position: relative;
+        width: 220px;
+        height: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .scan-overlay {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 10;
+    }
+
+    .scan-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #0066CC, #66b3ff, #0066CC, transparent);
+        box-shadow: 0 0 15px #0066CC, 0 0 30px #0066CC;
+        opacity: 0;
+        z-index: 11;
+    }
+
+    .scan-line.active {
+        opacity: 1;
+        animation: scanDown 2.5s ease-in-out forwards;
+    }
+
+    @keyframes scanDown {
+        0% { top: 0; opacity: 1; }
+        100% { top: 100%; opacity: 0.3; }
+    }
+
+    .logo-img {
+        width: 200px;
+        height: auto;
+        border-radius: 12px;
+        clip-path: inset(50% 50% 50% 50%);
+        opacity: 0;
+        filter: blur(20px) brightness(1.5);
+        transition: none;
+    }
+
+    .logo-img.revealing {
+        animation: logoReveal 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    @keyframes logoReveal {
+        0% {
+            clip-path: inset(50% 50% 50% 50%);
+            opacity: 0;
+            filter: blur(20px) brightness(1.5);
+            transform: scale(0.8);
+        }
+        20% {
+            clip-path: inset(40% 40% 40% 40%);
+            opacity: 0.3;
+            filter: blur(15px) brightness(1.4);
+            transform: scale(0.85);
+        }
+        40% {
+            clip-path: inset(25% 25% 25% 25%);
+            opacity: 0.5;
+            filter: blur(10px) brightness(1.3);
+            transform: scale(0.9);
+        }
+        60% {
+            clip-path: inset(12% 12% 12% 12%);
+            opacity: 0.7;
+            filter: blur(5px) brightness(1.15);
+            transform: scale(0.95);
+        }
+        80% {
+            clip-path: inset(4% 4% 4% 4%);
+            opacity: 0.9;
+            filter: blur(2px) brightness(1.05);
+            transform: scale(0.98);
+        }
+        100% {
+            clip-path: inset(0% 0% 0% 0%);
+            opacity: 1;
+            filter: blur(0) brightness(1);
+            transform: scale(1);
+        }
+    }
+
+    .glow-ring {
+        position: absolute;
+        width: 240px;
+        height: 240px;
+        border-radius: 16px;
+        border: 2px solid transparent;
+        opacity: 0;
+        z-index: 5;
+    }
+
+    .glow-ring.active {
+        animation: glowPulse 3s ease-in-out forwards;
+    }
+
+    @keyframes glowPulse {
+        0% {
+            opacity: 0;
+            border-color: transparent;
+            box-shadow: 0 0 0 rgba(0,102,204,0);
+        }
+        30% {
+            opacity: 1;
+            border-color: #0066CC;
+            box-shadow: 0 0 20px rgba(0,102,204,0.5), inset 0 0 20px rgba(0,102,204,0.1);
+        }
+        70% {
+            opacity: 1;
+            border-color: #0066CC;
+            box-shadow: 0 0 30px rgba(0,102,204,0.6), inset 0 0 30px rgba(0,102,204,0.15);
+        }
+        100% {
+            opacity: 0.6;
+            border-color: rgba(0,102,204,0.4);
+            box-shadow: 0 0 15px rgba(0,102,204,0.3);
+        }
+    }
+
+    .particles-canvas {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 12;
+    }
+
+    .title-anim {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        color: #66b3ff;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-top: 18px;
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    .title-anim.visible {
+        animation: fadeUp 1s ease forwards;
+    }
+
+    @keyframes fadeUp {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
     .typing-container {
         font-family: 'JetBrains Mono', monospace;
-        font-size: 16px;
+        font-size: 14px;
         color: #FFFFFF;
         background: linear-gradient(135deg, #001a33 0%, #003366 50%, #004080 100%);
-        padding: 25px;
+        padding: 22px;
         border-radius: 12px;
-        margin: 10px 0;
+        margin: 18px auto 0;
         border-left: 4px solid #0066CC;
         box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
-        min-height: 160px;
+        min-height: 140px;
+        width: 95%;
+        max-width: 700px;
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    .typing-container.visible {
+        animation: fadeUp 0.8s ease forwards;
     }
 
     .typing-line {
@@ -79,7 +253,7 @@ components.html("""
         overflow: hidden;
         border-right: 2px solid #0066CC;
         width: 0;
-        margin: 8px 0;
+        margin: 7px 0;
         line-height: 1.6;
     }
 
@@ -95,7 +269,6 @@ components.html("""
     }
 
     .highlight { color: #66b3ff; font-weight: bold; }
-    .emoji { font-style: normal; }
 
     @keyframes typing {
         from { width: 0; }
@@ -108,41 +281,124 @@ components.html("""
     }
 </style>
 
-<div class="typing-container">
-    <div class="typing-line" id="line1">
-        <span class="emoji">📋</span> 1. Faça o upload da planilha <span class="highlight">"A"</span> e depois da <span class="highlight">"B"</span>, ambas em CSV.
+<div class="hero">
+    <div class="logo-wrapper">
+        <canvas class="particles-canvas" id="particlesCanvas"></canvas>
+        <div class="glow-ring" id="glowRing"></div>
+        <div class="scan-overlay">
+            <div class="scan-line" id="scanLine"></div>
+        </div>
+        <img class="logo-img" id="logoImg"
+             src="https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG"
+             alt="Logo Azul" />
     </div>
-    <div class="typing-line" id="line2">
-        <span class="emoji">⏳</span> 2. Aguarde o carregamento completo dos arquivos.
-    </div>
-    <div class="typing-line" id="line3">
-        <span class="emoji">⬇️</span> 3. Clique no <span class="highlight">botão azul flutuante</span> para baixar sua planilha.
-    </div>
-    <div class="typing-line" id="line4">
-        <span class="highlight">#oceuéazul</span> <span class="emoji">✈️💙</span>
+    <div class="title-anim" id="titleAnim">Operações de Solo Safety</div>
+
+    <div class="typing-container" id="typingBox">
+        <div class="typing-line" id="line1">
+            📋 1. Faça o upload da planilha <span class="highlight">"A"</span> e depois da <span class="highlight">"B"</span>, ambas em CSV.
+        </div>
+        <div class="typing-line" id="line2">
+            ⏳ 2. Aguarde o carregamento completo dos arquivos.
+        </div>
+        <div class="typing-line" id="line3">
+            ⬇️ 3. Clique no <span class="highlight">botão azul flutuante</span> para baixar sua planilha.
+        </div>
+        <div class="typing-line" id="line4">
+            <span class="highlight">#oceuéazul</span> ✈️💙
+        </div>
     </div>
 </div>
 
 <script>
-    const lines = document.querySelectorAll('.typing-line');
-    let currentLine = 0;
-    const delayBetween = 1800;
+(function() {
+    const logo = document.getElementById('logoImg');
+    const scanLine = document.getElementById('scanLine');
+    const glowRing = document.getElementById('glowRing');
+    const titleAnim = document.getElementById('titleAnim');
+    const typingBox = document.getElementById('typingBox');
+    const canvas = document.getElementById('particlesCanvas');
+    const ctx = canvas.getContext('2d');
 
-    function typeLine() {
-        if (currentLine > 0) {
-            lines[currentLine - 1].classList.remove('active');
-            lines[currentLine - 1].classList.add('done');
-        }
-        if (currentLine < lines.length) {
-            lines[currentLine].classList.add('active');
-            currentLine++;
-            setTimeout(typeLine, delayBetween);
-        }
+    canvas.width = 220;
+    canvas.height = 220;
+
+    let particles = [];
+
+    function createParticle() {
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        return {
+            x: cx, y: cy,
+            vx: (Math.random() - 0.5) * 3,
+            vy: (Math.random() - 0.5) * 3,
+            life: 1,
+            decay: 0.008 + Math.random() * 0.015,
+            size: 1 + Math.random() * 2,
+            color: Math.random() > 0.5 ? '0, 102, 204' : '102, 179, 255'
+        };
     }
 
-    setTimeout(typeLine, 500);
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life -= p.decay;
+            if (p.life <= 0) { particles.splice(i, 1); continue; }
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(' + p.color + ',' + p.life + ')';
+            ctx.fill();
+        }
+        if (particles.length > 0) requestAnimationFrame(animateParticles);
+    }
+
+    function burstParticles() {
+        for (let i = 0; i < 60; i++) particles.push(createParticle());
+        animateParticles();
+    }
+
+    setTimeout(function() {
+        scanLine.classList.add('active');
+        glowRing.classList.add('active');
+    }, 300);
+
+    setTimeout(function() {
+        logo.classList.add('revealing');
+        burstParticles();
+    }, 800);
+
+    setTimeout(function() {
+        titleAnim.classList.add('visible');
+    }, 3200);
+
+    setTimeout(function() {
+        typingBox.classList.add('visible');
+
+        const lines = typingBox.querySelectorAll('.typing-line');
+        let current = 0;
+        const delay = 1800;
+
+        function typeLine() {
+            if (current > 0) {
+                lines[current - 1].classList.remove('active');
+                lines[current - 1].classList.add('done');
+            }
+            if (current < lines.length) {
+                lines[current].classList.add('active');
+                current++;
+                setTimeout(typeLine, delay);
+            }
+        }
+        setTimeout(typeLine, 400);
+    }, 3800);
+})();
 </script>
-""", height=250)
+""", height=480)
+
+st.title("Transferência de Planilhas - Operações de Solo Safety - BRIOU")
 
 arquivo_a: st.runtime.uploaded_file_manager.UploadedFile | None = st.file_uploader(
     "📎 Suba a Planilha A (Data SK)", type=["csv", "xls", "xlsx"]
