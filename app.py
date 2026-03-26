@@ -6,13 +6,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import io
-import requests
-import tempfile
-import os
 import streamlit.components.v1 as components
-from openpyxl import Workbook
-from openpyxl.drawing.image import Image as XlImage
-from openpyxl.utils.dataframe import dataframe_to_rows
 
 MIN_COLS_A: Final[int] = 6
 MIN_COLS_B: Final[int] = 23
@@ -27,7 +21,6 @@ SUFFIX: Final[str] = "108"
 GENERAL_LABEL: Final[str] = "General"
 INTL_LABEL: Final[str] = "INTL"
 DOM_LABEL: Final[str] = "DOM"
-LOGO_URL: Final[str] = "https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG"
 
 st.markdown("""
 <style>
@@ -506,40 +499,6 @@ def _processar(df_a: pd.DataFrame, df_b: pd.DataFrame) -> pd.DataFrame:
     return df_final
 
 
-def _gerar_excel_com_logo(df_final: pd.DataFrame) -> io.BytesIO:
-    img_data: bytes = requests.get(LOGO_URL).content
-    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
-    tmp.write(img_data)
-    tmp.close()
-
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Planilha Final"
-
-    img = XlImage(tmp.name)
-    img.width = 250
-    img.height = 80
-    ws.add_image(img, "A1")
-
-    ws.row_dimensions[1].height = 30
-    ws.row_dimensions[2].height = 30
-    ws.row_dimensions[3].height = 30
-
-    header_row: int = 5
-    for c_idx, col_name in enumerate(df_final.columns, start=1):
-        ws.cell(row=header_row, column=c_idx, value=str(col_name))
-
-    for r_idx, row in enumerate(df_final.values.tolist(), start=header_row + 1):
-        for c_idx, value in enumerate(row, start=1):
-            ws.cell(row=r_idx, column=c_idx, value=value)
-
-    buf = io.BytesIO()
-    wb.save(buf)
-    buf.seek(0)
-    os.unlink(tmp.name)
-    return buf
-
-
 if arquivo_a is not None and arquivo_b is not None:
     try:
         df_a: pd.DataFrame = ler_arquivo(arquivo_a)
@@ -560,18 +519,18 @@ if arquivo_a is not None and arquivo_b is not None:
             st.write(f"Linhas: {len(df_final)} | Colunas: {len(df_final.columns)}")
             st.dataframe(df_final)
 
-            excel_buf: io.BytesIO = _gerar_excel_com_logo(df_final)
+            csv: str = df_final.to_csv(index=False, encoding="latin-1", sep=";")
 
             baixou: bool = st.download_button(
                 label="⬇️ Baixar Planilha Final",
-                data=excel_buf,
-                file_name="planilha_final.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                data=csv,
+                file_name="planilha_final.csv",
+                mime="text/csv",
             )
 
             if baixou:
                 st.success("Obrigado! Segurança é o nosso primeiro valor! ✈️💙")
-                st.image(LOGO_URL, width=200)
+                st.image("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG", width=200)
 
     except Exception as e:
         st.error(f"Erro ao ler arquivos: {e}")
