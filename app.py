@@ -268,6 +268,19 @@ components.html("""
         border-right: none;
     }
 
+    .greeting-line {
+        opacity: 0;
+        margin-bottom: 12px;
+        font-size: 15px;
+        font-weight: bold;
+        color: #66b3ff;
+    }
+
+    .greeting-line.visible {
+        opacity: 1;
+        animation: fadeUp 0.8s ease forwards;
+    }
+
     .highlight { color: #66b3ff; font-weight: bold; }
 
     @keyframes typing {
@@ -295,6 +308,7 @@ components.html("""
     <div class="title-anim" id="titleAnim">Operações de Solo Safety</div>
 
     <div class="typing-container" id="typingBox">
+        <div class="greeting-line" id="greetingLine">Prezado Tripulante, siga as instruções:</div>
         <div class="typing-line" id="line1">
             📋 1. Faça o upload da planilha <span class="highlight">"A"</span> e depois da <span class="highlight">"B"</span>, ambas em CSV.
         </div>
@@ -317,6 +331,7 @@ components.html("""
     const glowRing = document.getElementById('glowRing');
     const titleAnim = document.getElementById('titleAnim');
     const typingBox = document.getElementById('typingBox');
+    const greetingLine = document.getElementById('greetingLine');
     const canvas = document.getElementById('particlesCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -376,6 +391,7 @@ components.html("""
 
     setTimeout(function() {
         typingBox.classList.add('visible');
+        greetingLine.classList.add('visible');
 
         const lines = typingBox.querySelectorAll('.typing-line');
         let current = 0;
@@ -396,7 +412,7 @@ components.html("""
     }, 2300);
 })();
 </script>
-""", height=480)
+""", height=520)
 
 st.title("Transferência de Planilhas - Operações de Solo Safety - BRIOU")
 
@@ -499,6 +515,189 @@ def _processar(df_a: pd.DataFrame, df_b: pd.DataFrame) -> pd.DataFrame:
     return df_final
 
 
+THANK_YOU_HTML = """
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+
+    .thank-container {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 14px;
+        color: #FFFFFF;
+        background: linear-gradient(135deg, #001a33 0%, #003366 50%, #004080 100%);
+        padding: 22px;
+        border-radius: 12px;
+        margin: 18px auto 0;
+        border-left: 4px solid #0066CC;
+        box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+        width: 95%;
+        max-width: 700px;
+        opacity: 0;
+        transform: translateY(15px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .thank-container.visible {
+        animation: thankFadeUp 0.8s ease forwards;
+    }
+
+    @keyframes thankFadeUp {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .thank-glow {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .thank-scan-line {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #0066CC, #66b3ff, #0066CC, transparent);
+        box-shadow: 0 0 15px #0066CC, 0 0 30px #0066CC;
+        opacity: 0;
+        z-index: 2;
+    }
+
+    .thank-scan-line.active {
+        opacity: 1;
+        animation: thankScanDown 1.2s ease-in-out forwards;
+    }
+
+    @keyframes thankScanDown {
+        0% { top: 0; opacity: 1; }
+        100% { top: 100%; opacity: 0.3; }
+    }
+
+    .thank-text {
+        position: relative;
+        z-index: 3;
+        opacity: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        border-right: 2px solid #0066CC;
+        width: 0;
+        line-height: 1.8;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .thank-text.active {
+        opacity: 1;
+        animation: thankTyping 2s steps(50, end) forwards, thankBlink 0.6s step-end infinite;
+    }
+
+    .thank-text.done {
+        opacity: 1;
+        width: 100%;
+        border-right: none;
+    }
+
+    .thank-highlight { color: #66b3ff; font-weight: bold; }
+
+    @keyframes thankTyping {
+        from { width: 0; }
+        to { width: 100%; }
+    }
+
+    @keyframes thankBlink {
+        from, to { border-color: transparent; }
+        50% { border-color: #0066CC; }
+    }
+
+    .thank-particles {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 4;
+    }
+</style>
+
+<div class="thank-container" id="thankBox">
+    <div class="thank-glow">
+        <div class="thank-scan-line" id="thankScanLine"></div>
+    </div>
+    <canvas class="thank-particles" id="thankParticles"></canvas>
+    <div class="thank-text" id="thankText">
+        Obrigado! Segurança é nosso primeiro valor! <span class="thank-highlight">#voeazul</span> ✈️💙
+    </div>
+</div>
+
+<script>
+(function() {
+    const box = document.getElementById('thankBox');
+    const scanLine = document.getElementById('thankScanLine');
+    const text = document.getElementById('thankText');
+    const canvas = document.getElementById('thankParticles');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = canvas.parentElement.offsetWidth || 700;
+    canvas.height = canvas.parentElement.offsetHeight || 80;
+
+    let particles = [];
+
+    function createParticle() {
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        return {
+            x: cx, y: cy,
+            vx: (Math.random() - 0.5) * 3,
+            vy: (Math.random() - 0.5) * 3,
+            life: 1,
+            decay: 0.008 + Math.random() * 0.015,
+            size: 1 + Math.random() * 2,
+            color: Math.random() > 0.5 ? '0, 102, 204' : '102, 179, 255'
+        };
+    }
+
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life -= p.decay;
+            if (p.life <= 0) { particles.splice(i, 1); continue; }
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(' + p.color + ',' + p.life + ')';
+            ctx.fill();
+        }
+        if (particles.length > 0) requestAnimationFrame(animateParticles);
+    }
+
+    function burstParticles() {
+        for (let i = 0; i < 40; i++) particles.push(createParticle());
+        animateParticles();
+    }
+
+    setTimeout(function() {
+        box.classList.add('visible');
+        scanLine.classList.add('active');
+        burstParticles();
+    }, 100);
+
+    setTimeout(function() {
+        text.classList.add('active');
+    }, 800);
+
+    setTimeout(function() {
+        text.classList.remove('active');
+        text.classList.add('done');
+    }, 3000);
+})();
+</script>
+"""
+
+
 if arquivo_a is not None and arquivo_b is not None:
     try:
         df_a: pd.DataFrame = ler_arquivo(arquivo_a)
@@ -529,8 +728,7 @@ if arquivo_a is not None and arquivo_b is not None:
             )
 
             if baixou:
-                st.success("Obrigado! Segurança é o nosso primeiro valor! ✈️💙")
-                st.image("https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG", width=200)
+                components.html(THANK_YOU_HTML, height=120)
 
     except Exception as e:
         st.error(f"Erro ao ler arquivos: {e}")
