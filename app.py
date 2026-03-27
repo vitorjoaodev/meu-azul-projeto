@@ -305,7 +305,7 @@ components.html("""
              src="https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG"
              alt="Logo Azul" />
     </div>
-    <div class="title-anim" id="titleAnim">Operações de Solo Safety</div>
+    <div class="title-anim" id="titleAnim">Operações de Solo Safety - BRIOU</div>
 
     <div class="typing-container" id="typingBox">
         <div class="greeting-line" id="greetingLine">Prezado Tripulante, siga as instruções:</div>
