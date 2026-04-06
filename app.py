@@ -10,10 +10,12 @@ import streamlit.components.v1 as components
 
 MIN_COLS_A: Final[int] = 6
 MIN_COLS_B: Final[int] = 23
+IDX_COL_A: Final[int] = 0
 IDX_COL_F: Final[int] = 5
 IDX_COL_W: Final[int] = 22
 IDX_COL_L: Final[int] = 11
 IDX_COL_B: Final[int] = 1
+IDX_COL_D: Final[int] = 3
 IDX_COL_E: Final[int] = 4
 IDX_COL_C: Final[int] = 2
 MARKER: Final[str] = "103 "
@@ -21,6 +23,7 @@ SUFFIX: Final[str] = "108"
 GENERAL_LABEL: Final[str] = "General"
 INTL_LABEL: Final[str] = "INTL"
 DOM_LABEL: Final[str] = "DOM"
+YEAR_SUFFIX: Final[str] = "-2026"
 
 st.markdown("""
 <style>
@@ -471,6 +474,16 @@ def extrair_timestamp(valor: object) -> object:
     return parte
 
 
+def _gerar_col_a(prefix: str, awb: str, num_chars: int) -> str:
+    if num_chars == 8:
+        return prefix + awb + YEAR_SUFFIX
+    if num_chars == 7:
+        return prefix + "0" + awb + YEAR_SUFFIX
+    if num_chars == 6:
+        return prefix + "00" + awb + YEAR_SUFFIX
+    return ""
+
+
 def _validar_colunas(df_a: pd.DataFrame, df_b: pd.DataFrame) -> bool:
     if len(df_a.columns) < MIN_COLS_A:
         st.error(
@@ -494,12 +507,15 @@ def _processar(df_a: pd.DataFrame, df_b: pd.DataFrame) -> pd.DataFrame:
     col_w: str = str(df_b.columns[IDX_COL_W])
     col_l: str = str(df_b.columns[IDX_COL_L])
     col_b: str = str(df_b.columns[IDX_COL_B])
+    col_d: str = str(df_b.columns[IDX_COL_D])
     col_e: str = str(df_b.columns[IDX_COL_E])
     col_c: str = str(df_b.columns[IDX_COL_C])
+    col_a: str = str(df_b.columns[IDX_COL_A])
 
     st.info(f"**Etapa 1:** Coluna F da A (`{col_f}`) → Coluna W da B (`{col_w}`)")
     st.info(f"**Etapa 2:** SE Coluna L (`{col_l}`) = 'General' → 'INTL', senão → 'DOM' na Coluna B (`{col_b}`)")
     st.info(f"**Etapa 3:** NÚM.CARACT da Coluna E (`{col_e}`) → Coluna C (`{col_c}`)")
+    st.info(f"**Etapa 4:** Coluna D (`{col_d}`) + Coluna E (`{col_e}`) + padding zeros + ano → Coluna A (`{col_a}`)")
 
     df_final: pd.DataFrame = df_b.copy()
     min_len: int = min(len(df_a), len(df_final))
@@ -511,6 +527,13 @@ def _processar(df_a: pd.DataFrame, df_b: pd.DataFrame) -> pd.DataFrame:
     df_final.iloc[:, IDX_COL_B] = np.where(col_l_valores == GENERAL_LABEL, INTL_LABEL, DOM_LABEL)
 
     df_final.iloc[:, IDX_COL_C] = df_final.iloc[:, IDX_COL_E].astype(str).apply(len)
+
+    col_d_vals: pd.Series[str] = df_final.iloc[:, IDX_COL_D].astype(str)
+    col_e_vals: pd.Series[str] = df_final.iloc[:, IDX_COL_E].astype(str)
+    col_c_vals: pd.Series[int] = df_final.iloc[:, IDX_COL_C].astype(int)
+    df_final.iloc[:, IDX_COL_A] = [
+        _gerar_col_a(d, e, c) for d, e, c in zip(col_d_vals, col_e_vals, col_c_vals)
+    ]
 
     return df_final
 
