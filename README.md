@@ -6,7 +6,6 @@ I implemented a Streamlit interface for uploading and processing spreadsheets (C
 
 The project contributed to reducing manual tasks and improving response time for operational analysis.
 
-Tech Stack: Python, Pandas, NumPy, Snowflake, Streamlit, ETL, Machine Learning
 Interface: https://jutu5brz8ngdyacsudyqsf.streamlit.app
 
 Stack:
@@ -16,4 +15,4 @@ Streamlit
 Pandas / NumPy
 Data Processing (ETL)
 File Handling (CSV, Excel – OpenPyXL, xlrd)
-Frontend (HTML, CSS, JavaScript)
+Frontend React
