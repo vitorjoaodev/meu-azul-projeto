@@ -305,10 +305,10 @@ components.html("""
             <div class="scan-line" id="scanLine"></div>
         </div>
         <img class="logo-img" id="logoImg"
-             src="https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/logo.JPG"
+             src="https://raw.githubusercontent.com/vitorjoaodev/meu-azul-projeto/main/LogoAzul_(2).png"
              alt="Logo Azul" />
     </div>
-    <div class="title-anim" id="titleAnim">Operações de Solo Safety - BRIOU</div>
+    <div class="title-anim" id="titleAnim">Operações </div>
 
     <div class="typing-container" id="typingBox">
         <div class="greeting-line" id="greetingLine">Prezado Tripulante, siga as instruções:</div>
@@ -650,7 +650,7 @@ THANK_YOU_HTML = """
     </div>
     <canvas class="thank-particles" id="thankParticles"></canvas>
     <div class="thank-text" id="thankText">
-        Obrigado! Segurança é nosso primeiro valor! <span class="thank-highlight">#voeazul</span> ✈️💙
+        Obrigado! <span class="thank-highlight">#voeazul</span> ✈️💙
     </div>
 </div>
 
